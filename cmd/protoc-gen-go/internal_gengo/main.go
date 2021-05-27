@@ -334,25 +334,28 @@ func genMessage(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo) {
 
 func genMessageFields(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo) {
 	sf := f.allMessageFieldsByPtr[m]
-	//genMessageInternalFields(g, f, m, sf)
+	genMessageInternalFields(g, f, m, sf)
 	for _, field := range m.Fields {
 		genMessageField(g, f, m, field, sf)
 	}
 }
 
 func genMessageInternalFields(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo, sf *structFields) {
-	g.P(genid.State_goname, " ", protoimplPackage.Ident("MessageState"))
+	tags := structTags{
+		{"xorm", "-"},
+	}
+	g.P(genid.State_goname, " ", protoimplPackage.Ident("MessageState"), tags)
 	sf.append(genid.State_goname)
-	g.P(genid.SizeCache_goname, " ", protoimplPackage.Ident("SizeCache"))
+	g.P(genid.SizeCache_goname, " ", protoimplPackage.Ident("SizeCache"), tags)
 	sf.append(genid.SizeCache_goname)
 	if m.hasWeak {
-		g.P(genid.WeakFields_goname, " ", protoimplPackage.Ident("WeakFields"))
+		g.P(genid.WeakFields_goname, " ", protoimplPackage.Ident("WeakFields"), tags)
 		sf.append(genid.WeakFields_goname)
 	}
-	g.P(genid.UnknownFields_goname, " ", protoimplPackage.Ident("UnknownFields"))
+	g.P(genid.UnknownFields_goname, " ", protoimplPackage.Ident("UnknownFields"), tags)
 	sf.append(genid.UnknownFields_goname)
 	if m.Desc.ExtensionRanges().Len() > 0 {
-		g.P(genid.ExtensionFields_goname, " ", protoimplPackage.Ident("ExtensionFields"))
+		g.P(genid.ExtensionFields_goname, " ", protoimplPackage.Ident("ExtensionFields"), tags)
 		sf.append(genid.ExtensionFields_goname)
 	}
 	if sf.count > 0 {
